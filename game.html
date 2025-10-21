@@ -1,0 +1,3701 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chashkz - Казино</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --accent: #06b6d4;
+            --accent-dark: #0891b2;
+            --dark: #0f172a;
+            --darker: #020617;
+            --dark-gray: #1e293b;
+            --light: #ffffff;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-dark: rgba(0, 0, 0, 0.2);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 80px; /* Space for bottom navigation */
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-light), transparent);
+            animation: float 15s infinite linear;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent);
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 3s;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.3), transparent);
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 6s;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent);
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 250px;
+            height: 250px;
+            top: 70%;
+            left: 20%;
+            animation-delay: 9s;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
+        }
+
+        .bg-circle:nth-child(5) {
+            width: 350px;
+            height: 350px;
+            top: 20%;
+            left: 40%;
+            animation-delay: 12s;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 30px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 60px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 30px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4, #8b5cf6, #3b82f6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .balance {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .user-avatar i {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 10px 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 70px;
+        }
+
+        .nav-item.active {
+            background: var(--glass);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-text {
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-text {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-indicator {
+            position: absolute;
+            top: -8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active .nav-indicator {
+            opacity: 1;
+        }
+
+        /* Main Content */
+        .main-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .promo-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo-btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 16px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Telegram Promo Banner */
+        .telegram-promo {
+            background: linear-gradient(135deg, #0088cc, #00aced);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .telegram-promo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .telegram-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .telegram-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .telegram-btn {
+            background: var(--light);
+            color: #0088cc;
+            border: none;
+            border-radius: 16px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        .footer-contact {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .telegram-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .telegram-icon:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Casino Page */
+        .casino-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .casino-game-card {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .casino-game-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .game-help {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .game-help:hover {
+            background: var(--primary);
+        }
+
+        .casino-game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .casino-game-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Deposit Page */
+        .deposit-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .deposit-method {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deposit-method::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .deposit-method:hover::before {
+            opacity: 1;
+        }
+
+        .deposit-method:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .deposit-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            color: var(--primary);
+        }
+
+        .deposit-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .deposit-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Rules Page */
+        .rules-content {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rules-section {
+            margin-bottom: 30px;
+        }
+
+        .rules-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .rules-section p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .rules-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rules-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Auth Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Profile Modal */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-id {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .profile-balance {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            text-align: center;
+            background: var(--glass);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--glass);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .deposit-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .withdraw-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .affiliate-icon {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .logout-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .menu-desc {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Deposit/Withdraw Modals */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .amount-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .amount-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .amount-btn.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+        }
+
+        /* Affiliate Section */
+        .affiliate-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .referral-link {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .referral-link input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Game Pages */
+        .game-page {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Game Buttons */
+        .game-btn {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .game-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .game-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .game-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .game-btn.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .game-btn.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* Game Form Elements */
+        .game-form-group {
+            margin-bottom: 20px;
+        }
+
+        .game-form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .game-form-input {
+            width: 100%;
+            padding: 14px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .game-form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Multiplier Buttons */
+        .multiplier-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .multiplier-btn {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .multiplier-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .multiplier-btn.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Bet Buttons */
+        .bet-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .bet-btn {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .bet-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .bet-btn.selected {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Mine Game */
+        .mine-game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .mine-cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mine-cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mine-cell.safe {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+        }
+
+        .mine-cell.mine {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #ef4444;
+        }
+
+        .mine-cell.opened {
+            pointer-events: none;
+        }
+
+        /* Game Stats */
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .game-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 10px 15px;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .game-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* Roulette Wheel */
+        .roulette-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 25px;
+        }
+
+        .roulette-wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #3b82f6 0deg 180deg, 
+                #1e293b 180deg 360deg
+            );
+            position: relative;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
+            box-shadow: 0 0 0 6px #1e293b, 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .roulette-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #1e293b;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        .roulette-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 40px;
+            background: #3b82f6;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 3;
+        }
+
+        /* Game Result */
+        .game-result {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--glass);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .result-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .result-text.win {
+            color: #10b981;
+        }
+
+        .result-text.lose {
+            color: #ef4444;
+        }
+
+        /* Game Help Modal */
+        .game-help-modal {
+            max-width: 500px;
+        }
+
+        .game-help-content {
+            margin-top: 15px;
+        }
+
+        .game-help-content h3 {
+            margin: 15px 0 10px;
+            color: var(--primary);
+        }
+
+        .game-help-content p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .game-help-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .game-help-content li {
+            margin-bottom: 5px;
+        }
+
+        /* Footer Links */
+        .footer-link {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Payment Processing */
+        .payment-processing {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .processing-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Settings Page */
+        .settings-option {
+            margin-bottom: 20px;
+        }
+
+        .settings-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .settings-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        /* Policy Pages */
+        .policy-content {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modern Icons */
+        .payment-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .casino-games {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .multiplier-buttons, .bet-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .roulette-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .amount-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .affiliate-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .deposit-methods {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .nav-text {
+                font-size: 0.7rem;
+            }
+            
+            .nav-item {
+                min-width: 60px;
+                padding: 8px 10px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">
+                <i class="fas fa-crown logo-icon"></i>
+                chashkz
+            </div>
+            <div class="user-info">
+                <div class="balance" id="headerBalance">1 000 ₽</div>
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Main Page -->
+        <div id="mainPage" class="page-content active">
+            <div class="promo-banner">
+                <div class="promo-title" data-i18n="mainTitle">Приглашайте друзей и получайте бонусы!</div>
+                <div class="promo-subtitle" data-i18n="mainSubtitle">Используйте реферальную ссылку для приглашения друзей и получайте 10% от их пополнений</div>
+                <button class="promo-btn" id="mainAffiliateBtn" data-i18n="mainAffiliateBtn">Узнать больше</button>
+            </div>
+
+            <!-- Telegram баннер -->
+            <div class="telegram-promo">
+                <div class="telegram-title" data-i18n="telegramTitle">Присоединяйтесь к нашему Telegram-каналу!</div>
+                <div class="telegram-subtitle" data-i18n="telegramSubtitle">Все новости, акции и обновления в нашем Telegram-канале</div>
+                <a href="https://t.me/chashkz" class="telegram-btn" target="_blank">
+                    <i class="fab fa-telegram"></i> <span data-i18n="telegramBtn">Подписаться на канал</span>
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Casino Page -->
+        <div id="casinoPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-crown"></i>
+                <span data-i18n="casinoGames">Игры казино</span>
+            </div>
+            
+            <div class="casino-games">
+                <div class="casino-game-card" data-game="mine">
+                    <div class="game-help" data-game="mine">?</div>
+                    <div class="casino-game-icon">💎</div>
+                    <div class="casino-game-title" data-i18n="mineGame">Минёр</div>
+                    <button class="game-btn" data-i18n="play">Играть</button>
+                </div>
+                
+                <div class="casino-game-card" data-game="roulette">
+                    <div class="game-help" data-game="roulette">?</div>
+                    <div class="casino-game-icon">🎡</div>
+                    <div class="casino-game-title" data-i18n="rouletteGame">Рулетка</div>
+                    <button class="game-btn" data-i18n="play">Играть</button>
+                </div>
+                
+                <div class="casino-game-card" data-game="crash">
+                    <div class="game-help" data-game="crash">?</div>
+                    <div class="casino-game-icon">🚀</div>
+                    <div class="casino-game-title" data-i18n="crashGame">Краш</div>
+                    <button class="game-btn" data-i18n="soon">Скоро</button>
+                </div>
+                
+                <div class="casino-game-card" data-game="dice">
+                    <div class="game-help" data-game="dice">?</div>
+                    <div class="casino-game-icon">🎲</div>
+                    <div class="casino-game-title" data-i18n="diceGame">Кости</div>
+                    <button class="game-btn" data-i18n="soon">Скоро</button>
+                </div>
+                
+                <div class="casino-game-card" data-game="slots">
+                    <div class="game-help" data-game="slots">?</div>
+                    <div class="casino-game-icon">🎰</div>
+                    <div class="casino-game-title" data-i18n="slotsGame">Слоты</div>
+                    <button class="game-btn" data-i18n="soon">Скоро</button>
+                </div>
+                
+                <div class="casino-game-card" data-game="blackjack">
+                    <div class="game-help" data-game="blackjack">?</div>
+                    <div class="casino-game-icon">🃏</div>
+                    <div class="casino-game-title" data-i18n="blackjackGame">Блэкджек</div>
+                    <button class="game-btn" data-i18n="soon">Скоро</button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit Page -->
+        <div id="depositPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-crown"></i>
+                <span data-i18n="depositTitle">Пополнение счета</span>
+            </div>
+            
+            <div class="deposit-methods">
+                <div class="deposit-method" data-method="card">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="deposit-title" data-i18n="bankCard">Банковская карта</div>
+                    <div class="deposit-desc" data-i18n="cardDesc">Visa, Mastercard, Мир</div>
+                </div>
+                
+                <div class="deposit-method" data-method="qiwi">
+                    <div class="payment-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="deposit-title" data-i18n="qiwiWallet">QIWI Кошелек</div>
+                    <div class="deposit-desc" data-i18n="qiwiDesc">Мгновенное пополнение</div>
+                </div>
+                
+                <div class="deposit-method" data-method="yoomoney">
+                    <div class="payment-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="deposit-title" data-i18n="yoomoney">ЮMoney</div>
+                    <div class="deposit-desc" data-i18n="yoomoneyDesc">Быстрый перевод</div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rules Page -->
+        <div id="rulesPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-crown"></i>
+                <span data-i18n="rulesTitle">Правила и условия</span>
+            </div>
+            
+            <div class="rules-content">
+                <div class="rules-section">
+                    <h3 data-i18n="rules1">1. Общие положения</h3>
+                    <p data-i18n="rules1p1">Chashkz - это онлайн-платформа для развлекательных игр. Участие в играх разрешено только лицам, достигшим 18 лет.</p>
+                    <p data-i18n="rules1p2">Регистрируясь на нашем сайте, вы подтверждаете, что вам исполнилось 18 лет и вы принимаете все условия настоящего соглашения.</p>
+                </div>
+                
+                <div class="rules-section">
+                    <h3 data-i18n="rules2">2. Регистрация и аккаунт</h3>
+                    <p data-i18n="rules2p1">Для доступа к играм необходимо зарегистрировать учетную запись, указав действительный email адрес и надежный пароль.</p>
+                    <p data-i18n="rules2p2">Каждый пользователь может иметь только одну учетную запись. Запрещено создавать множественные аккаунты.</p>
+                    <p data-i18n="rules2p3">Вы несете ответственность за сохранность своих учетных данных. В случае утери доступа к аккаунту, свяжитесь с технической поддержкой.</p>
+                </div>
+                
+                <div class="rules-section">
+                    <h3 data-i18n="rules3">3. Финансовые условия</h3>
+                    <ul>
+                        <li data-i18n="rule3li1">Минимальная сумма ставки: 10 ₽</li>
+                        <li data-i18n="rule3li2">Максимальная сумма ставки: 10 000 ₽</li>
+                        <li data-i18n="rule3li3">Минимальная сумма пополнения: 100 ₽</li>
+                        <li data-i18n="rule3li4">Минимальная сумма вывода: 500 ₽</li>
+                        <li data-i18n="rule3li5">Максимальная сумма вывода в сутки: 50 000 ₽</li>
+                    </ul>
+                    <p data-i18n="rules3p1">Все выигрыши зачисляются на баланс моментально после завершения игры.</p>
+                </div>
+                
+                <div class="rules-section">
+                    <h3 data-i18n="rules4">4. Пополнение счета и вывод средств</h3>
+                    <p data-i18n="rules4p1">Пополнение счета доступно через различные платежные системы. Время обработки платежа - до 5 минут.</p>
+                    <p data-i18n="rules4p2">Для вывода средств необходимо пройти верификацию аккаунта. Заявки на вывод обрабатываются в течение 24 часов.</p>
+                    <p data-i18n="rules4p3">Вывод средств возможен только на те реквизиты, с которых осуществлялось пополнение счета.</p>
+                </div>
+                
+                <div class="rules-section">
+                    <h3 data-i18n="rules5">5. Партнерская программа</h3>
+                    <p data-i18n="rules5p1">Участники партнерской программы получают 10% от каждого пополнения счета привлеченных рефералов.</p>
+                    <p data-i18n="rules5p2">Реферальные начисления зачисляются моментально и доступны для вывода без ограничений.</p>
+                    <p data-i18n="rules5p3">Запрещено регистрировать в качестве рефералов собственные аккаунты или аккаунты членов семьи.</p>
+                </div>
+                
+                <div class="rules-section">
+                    <h3 data-i18n="rules6">6. Ответственная игра</h3>
+                    <p data-i18n="rules6p1">Мы пропагандируем ответственный подход к азартным играм. Рекомендуем устанавливать лимиты по времени и деньгам.</p>
+                    <p data-i18n="rules6p2">Признаки игровой зависимости:</p>
+                    <ul>
+                        <li data-i18n="rule6li1">Потеря контроля над временем и деньгами, потраченными на игру</li>
+                        <li data-i18n="rule6li2">Постоянные мысли об игре в течение дня</li>
+                        <li data-i18n="rule6li3">Попытки отыграться после проигрышей</li>
+                        <li data-i18n="rule6li4">Сокрытие от близких времени и денег, потраченных на игру</li>
+                        <li data-i18n="rule6li5">Игра для ухода от проблем или плохого настроения</li>
+                    </ul>
+                    <p data-i18n="rules6p3">Если вы заметили у себя или своих близких признаки игровой зависимости, обратитесь за профессиональной помощью.</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-cog"></i>
+                <span data-i18n="settingsTitle">Настройки</span>
+            </div>
+            
+            <div class="rules-content">
+                <div class="settings-option">
+                    <label class="settings-label" data-i18n="languageLabel">Язык / Language</label>
+                    <select class="settings-select" id="languageSelect">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                
+                <div class="settings-option">
+                    <label class="settings-label" data-i18n="currencyLabel">Валюта</label>
+                    <select class="settings-select" id="currencySelect">
+                        <option value="RUB">Российский рубль (₽)</option>
+                        <option value="USD">Доллар США ($)</option>
+                        <option value="KZT">Казахстанский тенге (₸)</option>
+                        <option value="BYN">Белорусский рубль (Br)</option>
+                    </select>
+                </div>
+                
+                <div class="settings-option">
+                    <button class="auth-btn" id="saveSettings" data-i18n="saveSettings">Сохранить настройки</button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Pages -->
+        <!-- Mine Game Page -->
+        <div id="mineGamePage" class="page-content">
+            <div class="game-page">
+                <div class="game-header">
+                    <button class="game-back-btn" data-page="casino">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="backToGames">Назад к играм</span>
+                    </button>
+                    <h2 data-i18n="mineGame">Минёр</h2>
+                </div>
+                
+                <div class="game-form-group">
+                    <div class="game-form-label" data-i18n="betAmount">Сумма ставки</div>
+                    <input type="number" class="game-form-input" id="betAmount" value="100" min="10" max="10000">
+                </div>
+                
+                <div class="game-form-group">
+                    <div class="game-form-label" data-i18n="multiplier">Множитель</div>
+                    <div class="multiplier-buttons">
+                        <button class="multiplier-btn" data-multiplier="2" data-i18n="multiplier2">×2 (3 мины)</button>
+                        <button class="multiplier-btn" data-multiplier="3" data-i18n="multiplier3">×3 (5 мин)</button>
+                        <button class="multiplier-btn" data-multiplier="5" data-i18n="multiplier5">×5 (7 мин)</button>
+                        <button class="multiplier-btn" data-multiplier="10" data-i18n="multiplier10">×10 (9 мин)</button>
+                    </div>
+                </div>
+                
+                <button class="game-btn" id="startGame" data-i18n="startGame">Начать игру</button>
+                
+                <div class="game-stats">
+                    <div class="game-stat">
+                        <div data-i18n="currentWin">Текущий выигрыш</div>
+                        <div class="game-stat-value" id="currentWin">0 ₽</div>
+                    </div>
+                    <div class="game-stat">
+                        <div data-i18n="openedCells">Открыто клеток</div>
+                        <div class="game-stat-value" id="openedCells">0/25</div>
+                    </div>
+                </div>
+                
+                <div id="mineGameBoard" class="mine-game-board" style="display: none;"></div>
+                
+                <div class="action-buttons" id="mineActionButtons" style="display: none;">
+                    <button class="game-btn success" id="collectBtn" data-i18n="collectWin">Забрать выигрыш</button>
+                    <button class="game-btn secondary" id="continueBtn" data-i18n="continueGame">Продолжить игру</button>
+                </div>
+                
+                <div class="game-result" id="mineResult">
+                    <div class="result-text" id="mineResultText"></div>
+                    <button class="game-btn" id="newMineGame" data-i18n="newGame">Новая игра</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roulette Game Page -->
+        <div id="rouletteGamePage" class="page-content">
+            <div class="game-page">
+                <div class="game-header">
+                    <button class="game-back-btn" data-page="casino">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-i18n="backToGames">Назад к играм</span>
+                    </button>
+                    <h2 data-i18n="rouletteGame">Рулетка</h2>
+                </div>
+                
+                <div class="game-form-group">
+                    <div class="game-form-label" data-i18n="betAmount">Сумма ставки</div>
+                    <input type="number" class="game-form-input" id="rouletteBet" value="100" min="10" max="10000">
+                </div>
+                
+                <div class="game-form-group">
+                    <div class="game-form-label" data-i18n="chooseBet">Выберите ставку</div>
+                    <div class="bet-buttons">
+                        <button class="bet-btn" data-bet="red" data-i18n="redBet">Красное (×2)</button>
+                        <button class="bet-btn" data-bet="black" data-i18n="blackBet">Чёрное (×2)</button>
+                        <button class="bet-btn" data-bet="green" data-i18n="greenBet">Зелёное (×14)</button>
+                    </div>
+                </div>
+                
+                <div class="roulette-container">
+                    <div class="roulette-wheel" id="wheel"></div>
+                    <div class="roulette-center"></div>
+                    <div class="roulette-pointer"></div>
+                </div>
+                
+                <button class="game-btn" id="spinRoulette" data-i18n="spinRoulette">Крутить рулетку</button>
+                
+                <div class="game-result" id="rouletteResult">
+                    <div class="result-text" id="rouletteResultText">-</div>
+                    <div class="game-stat-value" id="rouletteWin">0 ₽</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Policy Pages -->
+        <!-- Privacy Policy Page -->
+        <div id="privacyPolicyPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-shield-alt"></i>
+                <span data-i18n="privacyPolicy">Политика конфиденциальности</span>
+            </div>
+            
+            <div class="policy-content">
+                <div class="rules-section">
+                    <h3 data-i18n="privacy1">Защита ваших данных</h3>
+                    <p data-i18n="privacy1p1">Мы в chashkz серьезно относимся к защите ваших персональных данных. Эта политика объясняет, как мы собираем, используем и защищаем информацию о вас.</p>
+                    
+                    <h3 data-i18n="privacy2">Собираемая информация</h3>
+                    <p data-i18n="privacy2p1">Мы собираем информацию, которую вы предоставляете при регистрации, включая email адрес и пароль. Также мы можем собирать данные о вашей игровой активности для улучшения нашего сервиса.</p>
+                    
+                    <h3 data-i18n="privacy3">Использование информации</h3>
+                    <p data-i18n="privacy3p1">Ваши данные используются для обеспечения работы игровой платформы, обработки транзакций и предоставления службы поддержки. Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законом.</p>
+                    
+                    <h3 data-i18n="privacy4">Безопасность</h3>
+                    <p data-i18n="privacy4p1">Мы применяем современные методы шифрования и защиты данных, чтобы обеспечить безопасность вашей информации.</p>
+                    
+                    <h3 data-i18n="privacy5">Cookies</h3>
+                    <p data-i18n="privacy5p1">Наш сайт использует cookies для улучшения пользовательского опыта и анализа трафика.</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fair Play Page -->
+        <div id="fairPlayPage" class="page-content">
+            <div class="section-title">
+                <i class="fas fa-handshake"></i>
+                <span data-i18n="fairPlay">Честная игра</span>
+            </div>
+            
+            <div class="policy-content">
+                <div class="rules-section">
+                    <h3 data-i18n="fairPlay1">Наши принципы</h3>
+                    <p data-i18n="fairPlay1p1">В chashkz мы стремимся обеспечить честную и прозрачную игровую среду для всех наших пользователей.</p>
+                    
+                    <h3 data-i18n="fairPlay2">Ответственная игра</h3>
+                    <p data-i18n="fairPlay2p1">Азартные игры должны быть развлечением, а не способом заработка. Мы настоятельно рекомендуем:</p>
+                    <ul>
+                        <li data-i18n="fairPlay2li1">Устанавливать лимиты по времени и деньгам</li>
+                        <li data-i18n="fairPlay2li2">Рассматривать проигрыши как стоимость развлечения</li>
+                        <li data-i18n="fairPlay2li3">Не пытаться отыграться после потерь</li>
+                        <li data-i18n="fairPlay2li4">Не играть в состоянии стресса или под воздействием веществ</li>
+                    </ul>
+                    
+                    <h3 data-i18n="fairPlay3">Признаки игровой зависимости</h3>
+                    <p data-i18n="fairPlay3p1">Обратите внимание на следующие признаки, которые могут указывать на развитие игровой зависимости:</p>
+                    <ul>
+                        <li data-i18n="fairPlay3li1">Постоянные мысли об игре</li>
+                        <li data-i18n="fairPlay3li2">Увеличение ставок для достижения прежнего уровня азарта</li>
+                        <li data-i18n="fairPlay3li3">Безуспешные попытки контролировать или прекратить игру</li>
+                        <li data-i18n="fairPlay3li4">Игра как способ уйти от проблем или плохого настроения</li>
+                        <li data-i18n="fairPlay3li5">Обман членов семьи или других лиц относительно степени вовлеченности в игру</li>
+                    </ul>
+                    
+                    <h3 data-i18n="fairPlay4">Помощь</h3>
+                    <p data-i18n="fairPlay4p1">Если вы считаете, что у вас или ваших близких есть проблемы с азартными играми, обратитесь за профессиональной помощью. Вы можете установить самоограничения в своем аккаунте или временно заблокировать его, обратившись в службу поддержки.</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <a href="#" class="footer-link" data-page="privacyPolicy" data-i18n="privacyPolicy">Политика конфиденциальности</a>
+                        <a href="#" class="footer-link" data-page="fairPlay" data-i18n="fairPlay">Честная игра</a>
+                        <a href="mailto:chashkzz@gmail.com" class="footer-link" data-i18n="support">Поддержка: chashkzz@gmail.com</a>
+                        <a href="https://t.me/chashkz" class="footer-link telegram-icon" target="_blank">
+                            <i class="fab fa-telegram"></i> <span data-i18n="telegramChannel">Telegram канал</span>
+                        </a>
+                    </div>
+                    <div class="footer-contact" data-i18n="copyright">
+                        © 2023 chashkz. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-items">
+            <div class="nav-item active" data-page="main">
+                <div class="nav-indicator"></div>
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-text" data-i18n="home">Главная</span>
+            </div>
+            
+            <div class="nav-item" data-page="casino">
+                <div class="nav-indicator"></div>
+                <i class="fas fa-crown nav-icon"></i>
+                <span class="nav-text" data-i18n="casino">Казино</span>
+            </div>
+            
+            <div class="nav-item" data-page="deposit">
+                <div class="nav-indicator"></div>
+                <i class="fas fa-wallet nav-icon"></i>
+                <span class="nav-text" data-i18n="deposit">Пополнение</span>
+            </div>
+            
+            <div class="nav-item" data-page="rules">
+                <div class="nav-indicator"></div>
+                <i class="fas fa-book nav-icon"></i>
+                <span class="nav-text" data-i18n="rules">Правила</span>
+            </div>
+            
+            <!-- Новая кнопка настроек -->
+            <div class="nav-item" data-page="settings">
+                <div class="nav-indicator"></div>
+                <i class="fas fa-cog nav-icon"></i>
+                <span class="nav-text" data-i18n="settings">Настройки</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAuthModal">&times;</button>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-form="login" data-i18n="login">Вход</div>
+                <div class="auth-tab" data-form="register" data-i18n="register">Регистрация</div>
+            </div>
+            
+            <div class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <div class="form-label" data-i18n="email">Email</div>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="example@mail.com">
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-label" data-i18n="password">Пароль</div>
+                    <input type="password" class="form-input" id="loginPassword" data-i18n-placeholder="enterPassword" placeholder="Введите пароль">
+                </div>
+                
+                <button class="auth-btn" id="loginBtn" data-i18n="loginBtn">Войти</button>
+                
+                <div class="form-footer">
+                    <span data-i18n="noAccount">Нет аккаунта?</span> <a href="#" class="switch-form" data-form="register" data-i18n="registerLink">Зарегистрироваться</a>
+                </div>
+            </div>
+            
+            <div class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <div class="form-label" data-i18n="email">Email</div>
+                    <input type="email" class="form-input" id="registerEmail" placeholder="example@mail.com">
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-label" data-i18n="password">Пароль</div>
+                    <input type="password" class="form-input" id="registerPassword" data-i18n-placeholder="createPassword" placeholder="Придумайте пароль">
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label" data-i18n="confirmPassword">Повторите пароль</div>
+                    <input type="password" class="form-input" id="registerPasswordConfirm" data-i18n-placeholder="repeatPassword" placeholder="Повторите пароль">
+                </div>
+                
+                <button class="auth-btn" id="registerBtn" data-i18n="registerBtn">Зарегистрироваться</button>
+                
+                <div class="form-footer">
+                    <span data-i18n="haveAccount">Уже есть аккаунт?</span> <a href="#" class="switch-form" data-form="login" data-i18n="loginLink">Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeProfileModal">&times;</button>
+            
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name" id="profileName">Игрок</div>
+                    <div class="profile-id" id="profileId">ID: 000000</div>
+                </div>
+            </div>
+            
+            <div class="profile-balance" id="profileBalance">
+                1 000 ₽
+            </div>
+            
+            <div class="profile-menu">
+                <div class="menu-item" id="depositBtn">
+                    <div class="menu-icon deposit-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title" data-i18n="depositBalance">Пополнить баланс</div>
+                        <div class="menu-desc" data-i18n="addFunds">Добавить средства на счет</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item" id="withdrawBtn">
+                    <div class="menu-icon withdraw-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title" data-i18n="withdrawFunds">Вывод средств</div>
+                        <div class="menu-desc" data-i18n="takeWinnings">Забрать выигрыш</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item" id="affiliateBtn">
+                    <div class="menu-icon affiliate-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title" data-i18n="affiliateProgram">Партнерская программа</div>
+                        <div class="menu-desc" data-i18n="inviteFriends">Пригласи друзей и получай бонусы</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item" id="logoutProfileBtn">
+                    <div class="menu-icon logout-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <div class="menu-text">
+                        <div class="menu-title" data-i18n="logout">Выйти</div>
+                        <div class="menu-desc" data-i18n="endSession">Завершить текущую сессию</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div class="modal-overlay" id="depositModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeDepositModal">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;" data-i18n="depositTitle">Пополнение баланса</h2>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="depositAmount">Сумма пополнения</div>
+                <input type="number" class="form-input" id="depositAmount" data-i18n-placeholder="enterAmount" placeholder="Введите сумму" min="100" max="50000">
+            </div>
+            
+            <div class="amount-grid">
+                <button class="amount-btn" data-amount="100">100 ₽</button>
+                <button class="amount-btn" data-amount="500">500 ₽</button>
+                <button class="amount-btn" data-amount="1000">1 000 ₽</button>
+                <button class="amount-btn" data-amount="2000">2 000 ₽</button>
+                <button class="amount-btn" data-amount="5000">5 000 ₽</button>
+                <button class="amount-btn" data-amount="10000">10 000 ₽</button>
+            </div>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="paymentMethod">Способ оплаты</div>
+                <select class="form-input" id="paymentMethod">
+                    <option value="card" data-i18n="bankCard">Банковская карта</option>
+                    <option value="qiwi" data-i18n="qiwiWallet">QIWI</option>
+                    <option value="yoomoney" data-i18n="yoomoney">ЮMoney</option>
+                </select>
+            </div>
+            
+            <div class="payment-processing" id="paymentProcessing" style="display: none;">
+                <div class="processing-spinner"></div>
+                <h3 data-i18n="processingPayment">Обработка платежа...</h3>
+                <p data-i18n="dontClosePage">Пожалуйста, не закрывайте страницу</p>
+            </div>
+            
+            <button class="auth-btn" id="confirmDeposit" data-i18n="depositBtn">Пополнить</button>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+    <div class="modal-overlay" id="paymentSuccessModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closePaymentSuccessModal">&times;</button>
+            <div style="text-align: center; padding: 20px;">
+                <div style="font-size: 4rem; color: #10b981; margin-bottom: 20px;">✓</div>
+                <h2 style="margin-bottom: 15px;" data-i18n="paymentSuccess">Платеж успешно завершен!</h2>
+                <p style="margin-bottom: 20px; opacity: 0.8;" data-i18n="fundsAdded">Средства зачислены на ваш счет</p>
+                <div class="profile-balance" id="newBalance" style="margin: 20px 0;">1 000 ₽</div>
+                <button class="auth-btn" id="closeSuccessModal" data-i18n="continue">Продолжить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeWithdrawModal">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;" data-i18n="withdrawTitle">Вывод средств</h2>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="withdrawAmount">Сумма вывода</div>
+                <input type="number" class="form-input" id="withdrawAmount" data-i18n-placeholder="enterAmount" placeholder="Введите сумму" min="100" max="50000">
+            </div>
+            
+            <div class="amount-grid">
+                <button class="amount-btn" data-amount="500">500 ₽</button>
+                <button class="amount-btn" data-amount="1000">1 000 ₽</button>
+                <button class="amount-btn" data-amount="2000">2 000 ₽</button>
+                <button class="amount-btn" data-amount="5000">5 000 ₽</button>
+                <button class="amount-btn" data-amount="10000">10 000 ₽</button>
+                <button class="amount-btn" data-amount="20000">20 000 ₽</button>
+            </div>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="withdrawMethod">Способ вывода</div>
+                <select class="form-input" id="withdrawMethod">
+                    <option value="card" data-i18n="bankCard">Банковская карта</option>
+                    <option value="qiwi" data-i18n="qiwiWallet">QIWI</option>
+                    <option value="yoomoney" data-i18n="yoomoney">ЮMoney</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="withdrawDetails">Реквизиты</div>
+                <input type="text" class="form-input" id="withdrawDetails" data-i18n-placeholder="cardWallet" placeholder="Номер карты/кошелька">
+            </div>
+            
+            <button class="auth-btn" id="confirmWithdraw" data-i18n="withdrawBtn">Вывести</button>
+        </div>
+    </div>
+
+    <!-- Affiliate Modal -->
+    <div class="modal-overlay" id="affiliateModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeAffiliateModal">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;" data-i18n="affiliateProgram">Партнерская программа</h2>
+            
+            <div class="affiliate-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="refCount">0</div>
+                    <div class="stat-label" data-i18n="referrals">Рефералов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="refEarnings">0 ₽</div>
+                    <div class="stat-label" data-i18n="earned">Заработано</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="form-label" data-i18n="yourRefLink">Ваша реферальная ссылка</div>
+                <div class="referral-link">
+                    <input type="text" id="refLink" value="https://chashkz.com/ref/000000" readonly>
+                    <button class="copy-btn" id="copyRefLink" data-i18n="copy">Копировать</button>
+                </div>
+            </div>
+            
+            <div class="rules-content">
+                <h3 data-i18n="howItWorks">Как это работает?</h3>
+                <p data-i18n="refDescription">Приглашайте друзей по своей реферальной ссылке и получайте 10% от их пополнений!</p>
+                
+                <h3 data-i18n="programConditions">Условия программы</h3>
+                <ul>
+                    <li data-i18n="refCondition1">10% от каждого пополнения вашего реферала</li>
+                    <li data-i18n="refCondition2">Бонус начисляется моментально</li>
+                    <li data-i18n="refCondition3">Без ограничений по количеству рефералов</li>
+                    <li data-i18n="refCondition4">Вывод реферальных средств доступен сразу</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Help Modal -->
+    <div class="modal-overlay" id="gameHelpModal">
+        <div class="modal-content game-help-modal">
+            <button class="close-modal" id="closeGameHelpModal">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;" id="gameHelpTitle" data-i18n="gameHelp">Помощь по игре</h2>
+            
+            <div class="game-help-content" id="gameHelpContent">
+                <!-- Game help content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translation system
+        const translations = {
+            ru: {
+                // Main page
+                "mainTitle": "Приглашайте друзей и получайте бонусы!",
+                "mainSubtitle": "Используйте реферальную ссылку для приглашения друзей и получайте 10% от их пополнений",
+                "mainAffiliateBtn": "Узнать больше",
+                "telegramTitle": "Присоединяйтесь к нашему Telegram-каналу!",
+                "telegramSubtitle": "Все новости, акции и обновления в нашем Telegram-канале",
+                "telegramBtn": "Подписаться на канал",
+                "telegramChannel": "Telegram канал",
+                "privacyPolicy": "Политика конфиденциальности",
+                "fairPlay": "Честная игра",
+                "support": "Поддержка: chashkzz@gmail.com",
+                "copyright": "© 2023 chashkz. Все права защищены.",
+                
+                // Navigation
+                "home": "Главная",
+                "casino": "Казино",
+                "deposit": "Пополнение",
+                "rules": "Правила",
+                "settings": "Настройки",
+                
+                // Casino page
+                "casinoGames": "Игры казино",
+                "mineGame": "Минёр",
+                "rouletteGame": "Рулетка",
+                "crashGame": "Краш",
+                "diceGame": "Кости",
+                "slotsGame": "Слоты",
+                "blackjackGame": "Блэкджек",
+                "play": "Играть",
+                "soon": "Скоро",
+                
+                // Deposit page
+                "depositTitle": "Пополнение счета",
+                "bankCard": "Банковская карта",
+                "cardDesc": "Visa, Mastercard, Мир",
+                "qiwiWallet": "QIWI Кошелек",
+                "qiwiDesc": "Мгновенное пополнение",
+                "yoomoney": "ЮMoney",
+                "yoomoneyDesc": "Быстрый перевод",
+                
+                // Rules page
+                "rulesTitle": "Правила и условия",
+                "rules1": "1. Общие положения",
+                "rules1p1": "Chashkz - это онлайн-платформа для развлекательных игр. Участие в играх разрешено только лицам, достигшим 18 лет.",
+                "rules1p2": "Регистрируясь на нашем сайте, вы подтверждаете, что вам исполнилось 18 лет и вы принимаете все условия настоящего соглашения.",
+                "rules2": "2. Регистрация и аккаунт",
+                "rules2p1": "Для доступа к играм необходимо зарегистрировать учетную запись, указав действительный email адрес и надежный пароль.",
+                "rules2p2": "Каждый пользователь может иметь только одну учетную запись. Запрещено создавать множественные аккаунты.",
+                "rules2p3": "Вы несете ответственность за сохранность своих учетных данных. В случае утери доступа к аккаунту, свяжитесь с технической поддержкой.",
+                "rules3": "3. Финансовые условия",
+                "rule3li1": "Минимальная сумма ставки: 10 ₽",
+                "rule3li2": "Максимальная сумма ставки: 10 000 ₽",
+                "rule3li3": "Минимальная сумма пополнения: 100 ₽",
+                "rule3li4": "Минимальная сумма вывода: 500 ₽",
+                "rule3li5": "Максимальная сумма вывода в сутки: 50 000 ₽",
+                "rules3p1": "Все выигрыши зачисляются на баланс моментально после завершения игры.",
+                "rules4": "4. Пополнение счета и вывод средств",
+                "rules4p1": "Пополнение счета доступно через различные платежные системы. Время обработки платежа - до 5 минут.",
+                "rules4p2": "Для вывода средств необходимо пройти верификацию аккаунта. Заявки на вывод обрабатываются в течение 24 часов.",
+                "rules4p3": "Вывод средств возможен только на те реквизиты, с которых осуществлялось пополнение счета.",
+                "rules5": "5. Партнерская программа",
+                "rules5p1": "Участники партнерской программы получают 10% от каждого пополнения счета привлеченных рефералов.",
+                "rules5p2": "Реферальные начисления зачисляются моментально и доступны для вывода без ограничений.",
+                "rules5p3": "Запрещено регистрировать в качестве рефералов собственные аккаунты или аккаунты членов семьи.",
+                "rules6": "6. Ответственная игра",
+                "rules6p1": "Мы пропагандируем ответственный подход к азартным играм. Рекомендуем устанавливать лимиты по времени и деньгам.",
+                "rules6p2": "Признаки игровой зависимости:",
+                "rule6li1": "Потеря контроля над временем и деньгами, потраченными на игру",
+                "rule6li2": "Постоянные мысли об игре в течение дня",
+                "rule6li3": "Попытки отыграться после проигрышей",
+                "rule6li4": "Сокрытие от близких времени и денег, потраченных на игру",
+                "rule6li5": "Игра для ухода от проблем или плохого настроения",
+                "rules6p3": "Если вы заметили у себя или своих близких признаки игровой зависимости, обратитесь за профессиональной помощью.",
+                
+                // Settings page
+                "settingsTitle": "Настройки",
+                "languageLabel": "Язык / Language",
+                "currencyLabel": "Валюта",
+                "saveSettings": "Сохранить настройки",
+                
+                // Auth modals
+                "login": "Вход",
+                "register": "Регистрация",
+                "email": "Email",
+                "password": "Пароль",
+                "confirmPassword": "Повторите пароль",
+                "enterPassword": "Введите пароль",
+                "createPassword": "Придумайте пароль",
+                "repeatPassword": "Повторите пароль",
+                "loginBtn": "Войти",
+                "registerBtn": "Зарегистрироваться",
+                "noAccount": "Нет аккаунта?",
+                "haveAccount": "Уже есть аккаунт?",
+                "registerLink": "Зарегистрироваться",
+                "loginLink": "Войти",
+                
+                // Profile modal
+                "depositBalance": "Пополнить баланс",
+                "addFunds": "Добавить средства на счет",
+                "withdrawFunds": "Вывод средств",
+                "takeWinnings": "Забрать выигрыш",
+                "affiliateProgram": "Партнерская программа",
+                "inviteFriends": "Пригласи друзей и получай бонусы",
+                "logout": "Выйти",
+                "endSession": "Завершить текущую сессию",
+                
+                // Deposit modal
+                "depositAmount": "Сумма пополнения",
+                "enterAmount": "Введите сумму",
+                "paymentMethod": "Способ оплаты",
+                "processingPayment": "Обработка платежа...",
+                "dontClosePage": "Пожалуйста, не закрывайте страницу",
+                "depositBtn": "Пополнить",
+                "paymentSuccess": "Платеж успешно завершен!",
+                "fundsAdded": "Средства зачислены на ваш счет",
+                "continue": "Продолжить",
+                
+                // Withdraw modal
+                "withdrawTitle": "Вывод средств",
+                "withdrawAmount": "Сумма вывода",
+                "withdrawMethod": "Способ вывода",
+                "withdrawDetails": "Реквизиты",
+                "cardWallet": "Номер карты/кошелька",
+                "withdrawBtn": "Вывести",
+                
+                // Affiliate modal
+                "referrals": "Рефералов",
+                "earned": "Заработано",
+                "yourRefLink": "Ваша реферальная ссылка",
+                "copy": "Копировать",
+                "howItWorks": "Как это работает?",
+                "refDescription": "Приглашайте друзей по своей реферальной ссылке и получайте 10% от их пополнений!",
+                "programConditions": "Условия программы",
+                "refCondition1": "10% от каждого пополнения вашего реферала",
+                "refCondition2": "Бонус начисляется моментально",
+                "refCondition3": "Без ограничений по количеству рефералов",
+                "refCondition4": "Вывод реферальных средств доступен сразу",
+                
+                // Game pages
+                "backToGames": "Назад к играм",
+                "betAmount": "Сумма ставки",
+                "multiplier": "Множитель",
+                "multiplier2": "×2 (3 мины)",
+                "multiplier3": "×3 (5 мин)",
+                "multiplier5": "×5 (7 мин)",
+                "multiplier10": "×10 (9 мин)",
+                "startGame": "Начать игру",
+                "currentWin": "Текущий выигрыш",
+                "openedCells": "Открыто клеток",
+                "collectWin": "Забрать выигрыш",
+                "continueGame": "Продолжить игру",
+                "newGame": "Новая игра",
+                "chooseBet": "Выберите ставку",
+                "redBet": "Красное (×2)",
+                "blackBet": "Чёрное (×2)",
+                "greenBet": "Зелёное (×14)",
+                "spinRoulette": "Крутить рулетку",
+                
+                // Policy pages
+                "privacy1": "Защита ваших данных",
+                "privacy1p1": "Мы в chashkz серьезно относимся к защите ваших персональных данных. Эта политика объясняет, как мы собираем, используем и защищаем информацию о вас.",
+                "privacy2": "Собираемая информация",
+                "privacy2p1": "Мы собираем информацию, которую вы предоставляете при регистрации, включая email адрес и пароль. Также мы можем собирать данные о вашей игровой активности для улучшения нашего сервиса.",
+                "privacy3": "Использование информации",
+                "privacy3p1": "Ваши данные используются для обеспечения работы игровой платформы, обработки транзакций и предоставления службы поддержки. Мы не передаем ваши данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законом.",
+                "privacy4": "Безопасность",
+                "privacy4p1": "Мы применяем современные методы шифрования и защиты данных, чтобы обеспечить безопасность вашей информации.",
+                "privacy5": "Cookies",
+                "privacy5p1": "Наш сайт использует cookies для улучшения пользовательского опыта и анализа трафика.",
+                
+                "fairPlay1": "Наши принципы",
+                "fairPlay1p1": "В chashkz мы стремимся обеспечить честную и прозрачную игровую среду для всех наших пользователей.",
+                "fairPlay2": "Ответственная игра",
+                "fairPlay2p1": "Азартные игры должны быть развлечением, а не способом заработка. Мы настоятельно рекомендуем:",
+                "fairPlay2li1": "Устанавливать лимиты по времени и деньгам",
+                "fairPlay2li2": "Рассматривать проигрыши как стоимость развлечения",
+                "fairPlay2li3": "Не пытаться отыграться после потерь",
+                "fairPlay2li4": "Не играть в состоянии стресса или под воздействием веществ",
+                "fairPlay3": "Признаки игровой зависимости",
+                "fairPlay3p1": "Обратите внимание на следующие признаки, которые могут указывать на развитие игровой зависимости:",
+                "fairPlay3li1": "Постоянные мысли об игре",
+                "fairPlay3li2": "Увеличение ставок для достижения прежнего уровня азарта",
+                "fairPlay3li3": "Безуспешные попытки контролировать или прекратить игру",
+                "fairPlay3li4": "Игра как способ уйти от проблем или плохого настроения",
+                "fairPlay3li5": "Обман членов семьи или других лиц относительно степени вовлеченности в игру",
+                "fairPlay4": "Помощь",
+                "fairPlay4p1": "Если вы считаете, что у вас или ваших близких есть проблемы с азартными играми, обратитесь за профессиональной помощью. Вы можете установить самоограничения в своем аккаунте или временно заблокировать его, обратившись в службу поддержки.",
+                
+                // Game help
+                "gameHelp": "Помощь по игре"
+            },
+            en: {
+                // Main page
+                "mainTitle": "Invite friends and get bonuses!",
+                "mainSubtitle": "Use the referral link to invite friends and get 10% of their deposits",
+                "mainAffiliateBtn": "Learn more",
+                "telegramTitle": "Join our Telegram channel!",
+                "telegramSubtitle": "All news, promotions and updates in our Telegram channel",
+                "telegramBtn": "Subscribe to channel",
+                "telegramChannel": "Telegram channel",
+                "privacyPolicy": "Privacy Policy",
+                "fairPlay": "Fair Play",
+                "support": "Support: chashkzz@gmail.com",
+                "copyright": "© 2023 chashkz. All rights reserved.",
+                
+                // Navigation
+                "home": "Home",
+                "casino": "Casino",
+                "deposit": "Deposit",
+                "rules": "Rules",
+                "settings": "Settings",
+                
+                // Casino page
+                "casinoGames": "Casino Games",
+                "mineGame": "Miner",
+                "rouletteGame": "Roulette",
+                "crashGame": "Crash",
+                "diceGame": "Dice",
+                "slotsGame": "Slots",
+                "blackjackGame": "Blackjack",
+                "play": "Play",
+                "soon": "Soon",
+                
+                // Deposit page
+                "depositTitle": "Deposit",
+                "bankCard": "Bank Card",
+                "cardDesc": "Visa, Mastercard, Mir",
+                "qiwiWallet": "QIWI Wallet",
+                "qiwiDesc": "Instant deposit",
+                "yoomoney": "YooMoney",
+                "yoomoneyDesc": "Fast transfer",
+                
+                // Rules page
+                "rulesTitle": "Rules and Conditions",
+                "rules1": "1. General Provisions",
+                "rules1p1": "Chashkz is an online platform for entertainment games. Participation in games is allowed only for persons who have reached 18 years of age.",
+                "rules1p2": "By registering on our website, you confirm that you are 18 years old and accept all the terms of this agreement.",
+                "rules2": "2. Registration and Account",
+                "rules2p1": "To access the games, you must register an account by providing a valid email address and a secure password.",
+                "rules2p2": "Each user can have only one account. Creating multiple accounts is prohibited.",
+                "rules2p3": "You are responsible for the safety of your credentials. If you lose access to your account, contact technical support.",
+                "rules3": "3. Financial Conditions",
+                "rule3li1": "Minimum bet amount: 10 ₽",
+                "rule3li2": "Maximum bet amount: 10,000 ₽",
+                "rule3li3": "Minimum deposit amount: 100 ₽",
+                "rule3li4": "Minimum withdrawal amount: 500 ₽",
+                "rule3li5": "Maximum withdrawal amount per day: 50,000 ₽",
+                "rules3p1": "All winnings are credited to the balance immediately after the game ends.",
+                "rules4": "4. Deposit and Withdrawal of Funds",
+                "rules4p1": "Deposit is available through various payment systems. Payment processing time is up to 5 minutes.",
+                "rules4p2": "To withdraw funds, you must verify your account. Withdrawal requests are processed within 24 hours.",
+                "rules4p3": "Withdrawal of funds is possible only to the details from which the account was replenished.",
+                "rules5": "5. Affiliate Program",
+                "rules5p1": "Participants of the affiliate program receive 10% of each deposit of attracted referrals.",
+                "rules5p2": "Referral accruals are credited instantly and are available for withdrawal without restrictions.",
+                "rules5p3": "It is forbidden to register your own accounts or accounts of family members as referrals.",
+                "rules6": "6. Responsible Gaming",
+                "rules6p1": "We promote a responsible approach to gambling. We recommend setting time and money limits.",
+                "rules6p2": "Signs of gambling addiction:",
+                "rule6li1": "Loss of control over time and money spent on the game",
+                "rule6li2": "Constant thoughts about the game during the day",
+                "rule6li3": "Attempts to win back after losses",
+                "rule6li4": "Hiding from loved ones the time and money spent on the game",
+                "rule6li5": "Playing to escape problems or bad mood",
+                "rules6p3": "If you notice signs of gambling addiction in yourself or your loved ones, seek professional help.",
+                
+                // Settings page
+                "settingsTitle": "Settings",
+                "languageLabel": "Language / Язык",
+                "currencyLabel": "Currency",
+                "saveSettings": "Save Settings",
+                
+                // Auth modals
+                "login": "Login",
+                "register": "Register",
+                "email": "Email",
+                "password": "Password",
+                "confirmPassword": "Confirm Password",
+                "enterPassword": "Enter password",
+                "createPassword": "Create password",
+                "repeatPassword": "Repeat password",
+                "loginBtn": "Login",
+                "registerBtn": "Register",
+                "noAccount": "No account?",
+                "haveAccount": "Already have an account?",
+                "registerLink": "Register",
+                "loginLink": "Login",
+                
+                // Profile modal
+                "depositBalance": "Top up balance",
+                "addFunds": "Add funds to account",
+                "withdrawFunds": "Withdraw funds",
+                "takeWinnings": "Take winnings",
+                "affiliateProgram": "Affiliate program",
+                "inviteFriends": "Invite friends and get bonuses",
+                "logout": "Logout",
+                "endSession": "End current session",
+                
+                // Deposit modal
+                "depositAmount": "Deposit amount",
+                "enterAmount": "Enter amount",
+                "paymentMethod": "Payment method",
+                "processingPayment": "Processing payment...",
+                "dontClosePage": "Please do not close the page",
+                "depositBtn": "Deposit",
+                "paymentSuccess": "Payment successfully completed!",
+                "fundsAdded": "Funds credited to your account",
+                "continue": "Continue",
+                
+                // Withdraw modal
+                "withdrawTitle": "Withdraw funds",
+                "withdrawAmount": "Withdrawal amount",
+                "withdrawMethod": "Withdrawal method",
+                "withdrawDetails": "Details",
+                "cardWallet": "Card number/wallet",
+                "withdrawBtn": "Withdraw",
+                
+                // Affiliate modal
+                "referrals": "Referrals",
+                "earned": "Earned",
+                "yourRefLink": "Your referral link",
+                "copy": "Copy",
+                "howItWorks": "How it works?",
+                "refDescription": "Invite friends using your referral link and get 10% of their deposits!",
+                "programConditions": "Program conditions",
+                "refCondition1": "10% of each deposit of your referral",
+                "refCondition2": "Bonus is credited instantly",
+                "refCondition3": "No restrictions on the number of referrals",
+                "refCondition4": "Withdrawal of referral funds is available immediately",
+                
+                // Game pages
+                "backToGames": "Back to games",
+                "betAmount": "Bet amount",
+                "multiplier": "Multiplier",
+                "multiplier2": "×2 (3 mines)",
+                "multiplier3": "×3 (5 mines)",
+                "multiplier5": "×5 (7 mines)",
+                "multiplier10": "×10 (9 mines)",
+                "startGame": "Start game",
+                "currentWin": "Current win",
+                "openedCells": "Opened cells",
+                "collectWin": "Collect win",
+                "continueGame": "Continue game",
+                "newGame": "New game",
+                "chooseBet": "Choose bet",
+                "redBet": "Red (×2)",
+                "blackBet": "Black (×2)",
+                "greenBet": "Green (×14)",
+                "spinRoulette": "Spin roulette",
+                
+                // Policy pages
+                "privacy1": "Protection of your data",
+                "privacy1p1": "We at chashkz take the protection of your personal data seriously. This policy explains how we collect, use and protect information about you.",
+                "privacy2": "Collected information",
+                "privacy2p1": "We collect information that you provide during registration, including email address and password. We may also collect data about your gaming activity to improve our service.",
+                "privacy3": "Use of information",
+                "privacy3p1": "Your data is used to ensure the operation of the gaming platform, process transactions and provide support services. We do not transfer your data to third parties without your consent, except as provided by law.",
+                "privacy4": "Security",
+                "privacy4p1": "We use modern encryption and data protection methods to ensure the security of your information.",
+                "privacy5": "Cookies",
+                "privacy5p1": "Our site uses cookies to improve user experience and analyze traffic.",
+                
+                "fairPlay1": "Our principles",
+                "fairPlay1p1": "At chashkz, we strive to provide a fair and transparent gaming environment for all our users.",
+                "fairPlay2": "Responsible gaming",
+                "fairPlay2p1": "Gambling should be entertainment, not a way to earn money. We strongly recommend:",
+                "fairPlay2li1": "Set time and money limits",
+                "fairPlay2li2": "Consider losses as the cost of entertainment",
+                "fairPlay2li3": "Do not try to win back after losses",
+                "fairPlay2li4": "Do not play under stress or under the influence of substances",
+                "fairPlay3": "Signs of gambling addiction",
+                "fairPlay3p1": "Pay attention to the following signs that may indicate the development of gambling addiction:",
+                "fairPlay3li1": "Constant thoughts about the game",
+                "fairPlay3li2": "Increasing bets to achieve the previous level of excitement",
+                "fairPlay3li3": "Unsuccessful attempts to control or stop the game",
+                "fairPlay3li4": "Playing as a way to escape problems or bad mood",
+                "fairPlay3li5": "Deceiving family members or other persons about the degree of involvement in the game",
+                "fairPlay4": "Help",
+                "fairPlay4p1": "If you think that you or your loved ones have problems with gambling, seek professional help. You can set self-restrictions in your account or temporarily block it by contacting support.",
+                
+                // Game help
+                "gameHelp": "Game Help"
+            }
+        };
+
+        // User management
+        let currentUser = null;
+        let userBalance = 1000;
+        let userId = '';
+
+        // Currency and language settings
+        let currentCurrency = 'RUB';
+        let currentLanguage = 'ru';
+        let exchangeRates = {
+            'RUB': 1,
+            'USD': 0.01237, // 1 RUB = 0.01237 USD
+            'KZT': 5.75,    // 1 RUB = 5.75 KZT
+            'BYN': 0.034    // 1 RUB = 0.034 BYN
+        };
+
+        // Apply translation to the page
+        function applyTranslation(lang) {
+            currentLanguage = lang;
+            const elements = document.querySelectorAll('[data-i18n]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName === 'INPUT' && element.hasAttribute('data-i18n-placeholder')) {
+                        const placeholderKey = element.getAttribute('data-i18n-placeholder');
+                        if (translations[lang][placeholderKey]) {
+                            element.placeholder = translations[lang][placeholderKey];
+                        }
+                    } else if (element.tagName === 'OPTION') {
+                        element.textContent = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // Update select elements
+            document.getElementById('languageSelect').value = lang;
+            
+            // Save language preference
+            localStorage.setItem('chashkz_language', lang);
+        }
+
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pageContents = document.querySelectorAll('.page-content');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetPage = item.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Show target page
+                pageContents.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === targetPage + 'Page') {
+                        page.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Footer links navigation
+        document.querySelectorAll('.footer-link[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = link.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => nav.classList.remove('active'));
+                document.querySelector(`.nav-item[data-page="${targetPage}"]`).classList.add('active');
+                
+                // Show target page
+                pageContents.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === targetPage + 'Page') {
+                        page.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Game back buttons
+        document.querySelectorAll('.game-back-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetPage = btn.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => nav.classList.remove('active'));
+                document.querySelector(`.nav-item[data-page="${targetPage}"]`).classList.add('active');
+                
+                // Show target page
+                pageContents.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === targetPage + 'Page') {
+                        page.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Main affiliate button
+        document.getElementById('mainAffiliateBtn').addEventListener('click', () => {
+            if (currentUser) {
+                document.getElementById('affiliateModal').style.display = 'flex';
+            } else {
+                document.getElementById('authModal').style.display = 'flex';
+            }
+        });
+
+        // Game cards - теперь открывают отдельные страницы
+        document.querySelectorAll('.casino-game-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't trigger if help button was clicked
+                if (e.target.classList.contains('game-help')) return;
+                
+                const gameType = card.dataset.game;
+                if (gameType === 'mine' || gameType === 'roulette') {
+                    // Show game page instead of modal
+                    pageContents.forEach(page => page.classList.remove('active'));
+                    document.getElementById(gameType + 'GamePage').classList.add('active');
+                    
+                    // Initialize game
+                    if (gameType === 'mine') {
+                        initMineGame();
+                    } else if (gameType === 'roulette') {
+                        initRouletteGame();
+                    }
+                }
+            });
+        });
+
+        // Game help buttons
+        document.querySelectorAll('.game-help').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const gameType = btn.dataset.game;
+                showGameHelp(gameType);
+            });
+        });
+
+        // Deposit methods - сразу открывают модальное окно
+        document.querySelectorAll('.deposit-method').forEach(method => {
+            method.addEventListener('click', () => {
+                const paymentMethod = method.dataset.method;
+                document.getElementById('paymentMethod').value = paymentMethod;
+                document.getElementById('depositModal').style.display = 'flex';
+            });
+        });
+
+        // Auth Modal
+        const authModal = document.getElementById('authModal');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const switchForms = document.querySelectorAll('.switch-form');
+        
+        document.getElementById('userAvatar').addEventListener('click', () => {
+            if (currentUser) {
+                document.getElementById('profileModal').style.display = 'flex';
+            } else {
+                authModal.style.display = 'flex';
+            }
+        });
+        
+        document.getElementById('closeAuthModal').addEventListener('click', () => {
+            authModal.style.display = 'none';
+        });
+
+        // Profile Modal
+        const profileModal = document.getElementById('profileModal');
+        document.getElementById('closeProfileModal').addEventListener('click', () => {
+            profileModal.style.display = 'none';
+        });
+
+        // Deposit Modal
+        const depositModal = document.getElementById('depositModal');
+        document.getElementById('depositBtn').addEventListener('click', () => {
+            profileModal.style.display = 'none';
+            depositModal.style.display = 'flex';
+        });
+        
+        document.getElementById('closeDepositModal').addEventListener('click', () => {
+            depositModal.style.display = 'none';
+        });
+
+        // Payment Success Modal
+        const paymentSuccessModal = document.getElementById('paymentSuccessModal');
+        document.getElementById('closePaymentSuccessModal').addEventListener('click', () => {
+            paymentSuccessModal.style.display = 'none';
+        });
+        
+        document.getElementById('closeSuccessModal').addEventListener('click', () => {
+            paymentSuccessModal.style.display = 'none';
+        });
+
+        // Withdraw Modal
+        const withdrawModal = document.getElementById('withdrawModal');
+        document.getElementById('withdrawBtn').addEventListener('click', () => {
+            profileModal.style.display = 'none';
+            withdrawModal.style.display = 'flex';
+        });
+        
+        document.getElementById('closeWithdrawModal').addEventListener('click', () => {
+            withdrawModal.style.display = 'none';
+        });
+
+        // Affiliate Modal
+        const affiliateModal = document.getElementById('affiliateModal');
+        document.getElementById('affiliateBtn').addEventListener('click', () => {
+            profileModal.style.display = 'none';
+            affiliateModal.style.display = 'flex';
+        });
+        
+        document.getElementById('closeAffiliateModal').addEventListener('click', () => {
+            affiliateModal.style.display = 'none';
+        });
+
+        // Game Help Modal
+        const gameHelpModal = document.getElementById('gameHelpModal');
+        document.getElementById('closeGameHelpModal').addEventListener('click', () => {
+            gameHelpModal.style.display = 'none';
+        });
+
+        // Auth tabs
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const formId = tab.dataset.form;
+                
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                authForms.forEach(form => {
+                    form.classList.remove('active');
+                    if (form.id === formId + 'Form') {
+                        form.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        switchForms.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const formId = link.dataset.form;
+                
+                authTabs.forEach(t => t.classList.remove('active'));
+                document.querySelector(`.auth-tab[data-form="${formId}"]`).classList.add('active');
+                
+                authForms.forEach(form => {
+                    form.classList.remove('active');
+                    if (form.id === formId + 'Form') {
+                        form.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Auth functionality
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert(currentLanguage === 'ru' ? 'Заполните все поля' : 'Fill in all fields');
+                return;
+            }
+            
+            // Simple validation
+            const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+            
+            if (users[email] && users[email].password === password) {
+                currentUser = { 
+                    email, 
+                    balance: users[email].balance || 1000,
+                    id: users[email].id || generateUserId(),
+                    refCount: users[email].refCount || 0,
+                    refEarnings: users[email].refEarnings || 0
+                };
+                userBalance = currentUser.balance;
+                userId = currentUser.id;
+                
+                // Save current user
+                localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+                
+                authModal.style.display = 'none';
+                updateUI();
+                alert(currentLanguage === 'ru' ? 'Успешный вход!' : 'Login successful!');
+            } else {
+                alert(currentLanguage === 'ru' ? 'Неверный email или пароль' : 'Invalid email or password');
+            }
+        });
+        
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+            
+            if (!email || !password || !passwordConfirm) {
+                alert(currentLanguage === 'ru' ? 'Заполните все поля' : 'Fill in all fields');
+                return;
+            }
+            
+            if (password !== passwordConfirm) {
+                alert(currentLanguage === 'ru' ? 'Пароли не совпадают' : 'Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert(currentLanguage === 'ru' ? 'Пароль должен содержать минимум 6 символов' : 'Password must be at least 6 characters');
+                return;
+            }
+            
+            // Simple email validation
+            if (!email.includes('@') || !email.includes('.')) {
+                alert(currentLanguage === 'ru' ? 'Введите корректный email' : 'Enter a valid email');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+            
+            if (users[email]) {
+                alert(currentLanguage === 'ru' ? 'Пользователь с таким email уже существует' : 'User with this email already exists');
+                return;
+            }
+            
+            // Register user
+            const userId = generateUserId();
+            users[email] = { 
+                password, 
+                balance: 1000,
+                id: userId,
+                refCount: 0,
+                refEarnings: 0
+            };
+            localStorage.setItem('chashkz_users', JSON.stringify(users));
+            
+            // Save to "file" (emulate with localStorage)
+            saveUserToFile(email, password, userId);
+            
+            currentUser = { 
+                email, 
+                balance: 1000,
+                id: userId,
+                refCount: 0,
+                refEarnings: 0
+            };
+            userBalance = 1000;
+            
+            // Save current user
+            localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+            
+            authModal.style.display = 'none';
+            updateUI();
+            alert(currentLanguage === 'ru' ? 'Регистрация успешна! На ваш счет зачислено 1000 ₽' : 'Registration successful! 1000 ₽ has been credited to your account');
+        });
+
+        // Save user to "file" (emulated with localStorage)
+        function saveUserToFile(email, password, userId) {
+            const userData = {
+                email: email,
+                password: password,
+                id: userId,
+                balance: 1000,
+                registrationDate: new Date().toISOString()
+            };
+            
+            const usersFile = JSON.parse(localStorage.getItem('chashkz_users_file') || '[]');
+            usersFile.push(userData);
+            localStorage.setItem('chashkz_users_file', JSON.stringify(usersFile));
+            
+            console.log('User saved to file:', userData);
+        }
+
+        // Deposit functionality
+        document.querySelectorAll('.amount-btn[data-amount]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.amount-btn[data-amount]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('depositAmount').value = btn.dataset.amount;
+            });
+        });
+
+        document.getElementById('confirmDeposit').addEventListener('click', () => {
+            const amount = parseInt(document.getElementById('depositAmount').value);
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            // Convert min amount to current currency
+            const minAmount = 100 * exchangeRates[currentCurrency];
+            
+            if (!amount || amount < minAmount) {
+                alert((currentLanguage === 'ru' ? 'Минимальная сумма пополнения - ' : 'Minimum deposit amount is ') + formatCurrency(100));
+                return;
+            }
+            
+            // Show processing
+            document.getElementById('paymentProcessing').style.display = 'block';
+            document.getElementById('confirmDeposit').style.display = 'none';
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Successful payment
+                // Convert amount back to rubles for storage
+                const amountInRub = amount / exchangeRates[currentCurrency];
+                userBalance += amountInRub;
+                currentUser.balance = userBalance;
+                
+                // Update user data
+                const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+                if (users[currentUser.email]) {
+                    users[currentUser.email].balance = userBalance;
+                    localStorage.setItem('chashkz_users', JSON.stringify(users));
+                }
+                
+                // Save current user
+                localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+                
+                // Update payment record
+                savePaymentRecord(currentUser.id, amountInRub, paymentMethod);
+                
+                // Show success
+                depositModal.style.display = 'none';
+                document.getElementById('paymentProcessing').style.display = 'none';
+                document.getElementById('confirmDeposit').style.display = 'block';
+                
+                document.getElementById('newBalance').textContent = formatCurrency(userBalance);
+                paymentSuccessModal.style.display = 'flex';
+                
+                updateUI();
+            }, 3000);
+        });
+
+        // Save payment record
+        function savePaymentRecord(userId, amount, method) {
+            const paymentData = {
+                userId: userId,
+                amount: amount,
+                method: method,
+                date: new Date().toISOString(),
+                status: 'completed'
+            };
+            
+            const payments = JSON.parse(localStorage.getItem('chashkz_payments') || '[]');
+            payments.push(paymentData);
+            localStorage.setItem('chashkz_payments', JSON.stringify(payments));
+            
+            console.log('Payment saved:', paymentData);
+        }
+
+        // Withdraw functionality
+        document.querySelectorAll('#withdrawModal .amount-btn[data-amount]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#withdrawModal .amount-btn[data-amount]').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('withdrawAmount').value = btn.dataset.amount;
+            });
+        });
+
+        document.getElementById('confirmWithdraw').addEventListener('click', () => {
+            const amount = parseInt(document.getElementById('withdrawAmount').value);
+            const details = document.getElementById('withdrawDetails').value;
+            
+            // Convert min amount to current currency
+            const minAmount = 100 * exchangeRates[currentCurrency];
+            
+            if (!amount || amount < minAmount) {
+                alert((currentLanguage === 'ru' ? 'Минимальная сумма вывода - ' : 'Minimum withdrawal amount is ') + formatCurrency(100));
+                return;
+            }
+            
+            // Convert amount back to rubles for comparison
+            const amountInRub = amount / exchangeRates[currentCurrency];
+            if (amountInRub > userBalance) {
+                alert(currentLanguage === 'ru' ? 'Недостаточно средств на балансе' : 'Insufficient funds');
+                return;
+            }
+            
+            if (!details) {
+                alert(currentLanguage === 'ru' ? 'Введите реквизиты для вывода' : 'Enter withdrawal details');
+                return;
+            }
+            
+            // Simulate withdraw
+            userBalance -= amountInRub;
+            currentUser.balance = userBalance;
+            
+            // Update user data
+            const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+            if (users[currentUser.email]) {
+                users[currentUser.email].balance = userBalance;
+                localStorage.setItem('chashkz_users', JSON.stringify(users));
+            }
+            
+            // Save current user
+            localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+            
+            updateUI();
+            withdrawModal.style.display = 'none';
+            alert((currentLanguage === 'ru' ? 'Заявка на вывод ' : 'Withdrawal request for ') + formatCurrency(amount) + (currentLanguage === 'ru' ? ' успешно отправлена. Обработка займет до 24 часов.' : ' successfully sent. Processing will take up to 24 hours.'));
+        });
+
+        // Affiliate functionality
+        document.getElementById('copyRefLink').addEventListener('click', () => {
+            const refLink = document.getElementById('refLink');
+            refLink.select();
+            document.execCommand('copy');
+            alert(currentLanguage === 'ru' ? 'Реферальная ссылка скопирована!' : 'Referral link copied!');
+        });
+
+        // Logout
+        document.getElementById('logoutProfileBtn').addEventListener('click', () => {
+            if (confirm(currentLanguage === 'ru' ? 'Вы уверены, что хотите выйти?' : 'Are you sure you want to logout?')) {
+                currentUser = null;
+                localStorage.removeItem('chashkz_currentUser');
+                updateUI();
+                profileModal.style.display = 'none';
+            }
+        });
+
+        // Settings functionality
+        document.getElementById('saveSettings').addEventListener('click', () => {
+            currentCurrency = document.getElementById('currencySelect').value;
+            const newLanguage = document.getElementById('languageSelect').value;
+            
+            // Save settings
+            const settings = {
+                currency: currentCurrency,
+                language: newLanguage
+            };
+            localStorage.setItem('chashkz_settings', JSON.stringify(settings));
+            
+            // Update display
+            updateCurrencyDisplay();
+            
+            // Apply new language if changed
+            if (newLanguage !== currentLanguage) {
+                applyTranslation(newLanguage);
+            }
+            
+            alert(currentLanguage === 'ru' ? 'Настройки сохранены!' : 'Settings saved!');
+        });
+
+        function generateUserId() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            const convertedAmount = amount * exchangeRates[currentCurrency];
+            
+            switch(currentCurrency) {
+                case 'RUB':
+                    return convertedAmount.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' ₽';
+                case 'USD':
+                    return '$' + convertedAmount.toFixed(2);
+                case 'KZT':
+                    return convertedAmount.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' ₸';
+                case 'BYN':
+                    return convertedAmount.toFixed(2) + ' Br';
+                default:
+                    return convertedAmount.toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' ₽';
+            }
+        }
+
+        // Function to update all displayed amounts
+        function updateCurrencyDisplay() {
+            // Update header balance
+            document.getElementById('headerBalance').textContent = formatCurrency(userBalance);
+            
+            // Update profile balance
+            document.getElementById('profileBalance').textContent = formatCurrency(userBalance);
+            
+            // Update amounts in deposit and withdraw modals
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                const amount = parseInt(btn.dataset.amount);
+                btn.textContent = formatCurrency(amount);
+            });
+            
+            // Update affiliate earnings
+            if (currentUser) {
+                document.getElementById('refEarnings').textContent = formatCurrency(currentUser.refEarnings);
+            }
+        }
+
+        function updateUI() {
+            const headerBalance = document.getElementById('headerBalance');
+            
+            if (currentUser) {
+                headerBalance.textContent = formatCurrency(userBalance);
+                // Update profile info
+                document.getElementById('profileName').textContent = currentUser.email.split('@')[0];
+                document.getElementById('profileId').textContent = 'ID: ' + currentUser.id;
+                document.getElementById('profileBalance').textContent = formatCurrency(userBalance);
+                document.getElementById('refLink').value = 'https://chashkz.com/ref/' + currentUser.id;
+                document.getElementById('refCount').textContent = currentUser.refCount;
+                document.getElementById('refEarnings').textContent = formatCurrency(currentUser.refEarnings);
+                
+                // Update avatar to show user is logged in
+                document.querySelector('.user-avatar i').className = 'fas fa-crown';
+            } else {
+                headerBalance.textContent = formatCurrency(1000);
+                document.querySelector('.user-avatar i').className = 'fas fa-user';
+            }
+        }
+
+        // Game help function
+        function showGameHelp(gameType) {
+            const gameHelpTitle = document.getElementById('gameHelpTitle');
+            const gameHelpContent = document.getElementById('gameHelpContent');
+            
+            if (gameType === 'mine') {
+                gameHelpTitle.textContent = currentLanguage === 'ru' ? 'Помощь по игре "Минёр"' : 'Help for "Miner" game';
+                gameHelpContent.innerHTML = currentLanguage === 'ru' ? `
+                    <h3>Как играть в Минёра?</h3>
+                    <p>Минёр - это игра, где вам нужно открывать безопасные клетки, избегая мин.</p>
+                    
+                    <h3>Правила игры</h3>
+                    <ul>
+                        <li>Игровое поле состоит из 25 клеток (5x5)</li>
+                        <li>Количество мин зависит от выбранного множителя</li>
+                        <li>Игрок открывает клетки по одной</li>
+                        <li>При открытии безопасной клетки выигрыш увеличивается</li>
+                        <li>При открытии мины игрок теряет ставку</li>
+                        <li>Игрок может в любой момент забрать текущий выигрыш</li>
+                    </ul>
+                    
+                    <h3>Стратегия</h3>
+                    <p>Чем больше клеток вы откроете, тем выше будет ваш выигрыш, но и риск наткнуться на мину увеличивается. Решайте, когда остановиться!</p>
+                ` : `
+                    <h3>How to play Miner?</h3>
+                    <p>Miner is a game where you need to open safe cells while avoiding mines.</p>
+                    
+                    <h3>Game rules</h3>
+                    <ul>
+                        <li>The playing field consists of 25 cells (5x5)</li>
+                        <li>The number of mines depends on the selected multiplier</li>
+                        <li>The player opens cells one by one</li>
+                        <li>When opening a safe cell, the winnings increase</li>
+                        <li>When opening a mine, the player loses the bet</li>
+                        <li>The player can take the current winnings at any time</li>
+                    </ul>
+                    
+                    <h3>Strategy</h3>
+                    <p>The more cells you open, the higher your winnings will be, but the risk of hitting a mine increases. Decide when to stop!</p>
+                `;
+            } else if (gameType === 'roulette') {
+                gameHelpTitle.textContent = currentLanguage === 'ru' ? 'Помощь по игре "Рулетка"' : 'Help for "Roulette" game';
+                gameHelpContent.innerHTML = currentLanguage === 'ru' ? `
+                    <h3>Как играть в Рулетку?</h3>
+                    <p>Рулетка - это классическая игра казино, где вы делаете ставки на цвет.</p>
+                    
+                    <h3>Правила игры</h3>
+                    <ul>
+                        <li>Игрок делает ставку на цвет: красное, черное или зеленое</li>
+                        <li>Множители: красное/черное ×2, зеленое ×14</li>
+                        <li>Вероятность выпадения: красное - 49%, черное - 49%, зеленое - 2%</li>
+                    </ul>
+                    
+                    <h3>Стратегия</h3>
+                    <p>Ставки на красное и черное имеют высокую вероятность выигрыша, но маленький множитель. Ставка на зеленое имеет низкую вероятность, но высокий множитель.</p>
+                ` : `
+                    <h3>How to play Roulette?</h3>
+                    <p>Roulette is a classic casino game where you bet on colors.</p>
+                    
+                    <h3>Game rules</h3>
+                    <ul>
+                        <li>The player bets on a color: red, black or green</li>
+                        <li>Multipliers: red/black ×2, green ×14</li>
+                        <li>Probability: red - 49%, black - 49%, green - 2%</li>
+                    </ul>
+                    
+                    <h3>Strategy</h3>
+                    <p>Bets on red and black have a high probability of winning, but a small multiplier. A bet on green has a low probability but a high multiplier.</p>
+                `;
+            } else {
+                gameHelpTitle.textContent = currentLanguage === 'ru' ? 'Помощь по игре' : 'Game Help';
+                gameHelpContent.innerHTML = currentLanguage === 'ru' ? `
+                    <h3>Информация о игре</h3>
+                    <p>Эта игра находится в разработке и скоро будет доступна для игры.</p>
+                    
+                    <h3>Что ожидать?</h3>
+                    <p>Мы работаем над созданием увлекательной и честной игры, которая скоро появится на нашей платформе.</p>
+                    
+                    <h3>Следите за обновлениями</h3>
+                    <p>Скоро здесь появится новая захватывающая игра!</p>
+                ` : `
+                    <h3>Game Information</h3>
+                    <p>This game is under development and will be available soon.</p>
+                    
+                    <h3>What to expect?</h3>
+                    <p>We are working on creating an exciting and fair game that will soon appear on our platform.</p>
+                    
+                    <h3>Stay tuned for updates</h3>
+                    <p>A new exciting game will appear here soon!</p>
+                `;
+            }
+            
+            gameHelpModal.style.display = 'flex';
+        }
+
+        // Mine Game Logic
+        function initMineGame() {
+            const mineGame = {
+                betAmount: 100,
+                multiplier: 2,
+                gameStarted: false,
+                cells: [],
+                mines: [],
+                openedCells: 0,
+                totalCells: 25,
+                currentWin: 0,
+                minesCount: 3,
+                
+                init() {
+                    document.getElementById('startGame').addEventListener('click', () => this.startGame());
+                    
+                    // Multiplier buttons
+                    document.querySelectorAll('.multiplier-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            document.querySelectorAll('.multiplier-btn').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            this.multiplier = parseInt(btn.dataset.multiplier);
+                            
+                            // Set mines count based on multiplier
+                            const minesMap = {2: 3, 3: 5, 5: 7, 10: 9};
+                            this.minesCount = minesMap[this.multiplier];
+                        });
+                    });
+
+                    // Set default multiplier
+                    document.querySelector('.multiplier-btn[data-multiplier="2"]').classList.add('selected');
+                },
+                
+                startGame() {
+                    this.betAmount = parseInt(document.getElementById('betAmount').value);
+                    
+                    if (this.betAmount < 10 || this.betAmount > 10000) {
+                        alert(currentLanguage === 'ru' ? 'Сумма ставки должна быть от 10 до 10 000 ₽' : 'Bet amount must be from 10 to 10,000 ₽');
+                        return;
+                    }
+                    
+                    // Convert bet amount to rubles for comparison
+                    const betAmountInRub = this.betAmount / exchangeRates[currentCurrency];
+                    if (betAmountInRub > userBalance) {
+                        alert(currentLanguage === 'ru' ? 'Недостаточно средств на балансе' : 'Insufficient funds');
+                        return;
+                    }
+                    
+                    // Deduct bet amount
+                    userBalance -= betAmountInRub;
+                    updateUI();
+                    this.saveUserBalance();
+                    
+                    this.gameStarted = true;
+                    this.openedCells = 0;
+                    this.currentWin = 0;
+                    
+                    // Generate game board
+                    const gameBoard = document.getElementById('mineGameBoard');
+                    gameBoard.innerHTML = '';
+                    gameBoard.style.display = 'grid';
+                    
+                    // Hide result display
+                    document.getElementById('mineResult').style.display = 'none';
+                    
+                    // Create cells
+                    for (let i = 0; i < this.totalCells; i++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'mine-cell';
+                        cell.dataset.index = i;
+                        cell.textContent = '?';
+                        cell.addEventListener('click', () => this.revealCell(i));
+                        gameBoard.appendChild(cell);
+                    }
+                    
+                    // Generate mines
+                    this.mines = [];
+                    while (this.mines.length < this.minesCount) {
+                        const randomIndex = Math.floor(Math.random() * this.totalCells);
+                        if (!this.mines.includes(randomIndex)) {
+                            this.mines.push(randomIndex);
+                        }
+                    }
+                    
+                    // Update UI
+                    document.getElementById('openedCells').textContent = `0/${this.totalCells - this.minesCount}`;
+                    document.getElementById('currentWin').textContent = formatCurrency(0);
+                    document.getElementById('mineActionButtons').style.display = 'none';
+                    document.getElementById('startGame').disabled = true;
+                },
+                
+                revealCell(index) {
+                    if (!this.gameStarted) return;
+                    
+                    const cell = document.querySelector(`.mine-cell[data-index="${index}"]`);
+                    cell.classList.add('opened');
+                    
+                    if (this.mines.includes(index)) {
+                        // Mine hit
+                        cell.classList.add('mine');
+                        cell.textContent = '💥';
+                        this.endGame(false);
+                    } else {
+                        // Safe cell
+                        cell.classList.add('safe');
+                        cell.textContent = '💎';
+                        this.openedCells++;
+                        this.currentWin = Math.floor(this.betAmount * this.multiplier * (this.openedCells / (this.totalCells - this.minesCount)));
+                        
+                        // Update UI
+                        document.getElementById('openedCells').textContent = `${this.openedCells}/${this.totalCells - this.minesCount}`;
+                        document.getElementById('currentWin').textContent = formatCurrency(this.currentWin);
+                        document.getElementById('mineActionButtons').style.display = 'grid';
+                        
+                        // Check if all safe cells are opened
+                        if (this.openedCells === this.totalCells - this.minesCount) {
+                            this.endGame(true);
+                        }
+                    }
+                },
+                
+                collectWin() {
+                    if (this.currentWin > 0) {
+                        // Convert win amount to rubles for storage
+                        const winAmountInRub = this.currentWin / exchangeRates[currentCurrency];
+                        userBalance += winAmountInRub;
+                        updateUI();
+                        this.saveUserBalance();
+                        this.showResult((currentLanguage === 'ru' ? 'Поздравляем! Вы выиграли ' : 'Congratulations! You won ') + formatCurrency(this.currentWin), true);
+                        this.endGame(true);
+                    }
+                },
+                
+                continueGame() {
+                    document.getElementById('mineActionButtons').style.display = 'none';
+                },
+                
+                endGame(isWin) {
+                    this.gameStarted = false;
+                    document.getElementById('mineActionButtons').style.display = 'none';
+                    document.getElementById('startGame').disabled = false;
+                    
+                    if (isWin) {
+                        // Show all mines
+                        this.mines.forEach(index => {
+                            const cell = document.querySelector(`.mine-cell[data-index="${index}"]`);
+                            cell.classList.add('mine');
+                            cell.textContent = '💣';
+                        });
+                    } else {
+                        this.showResult(currentLanguage === 'ru' ? 'К сожалению, вы попали на мину!' : 'Unfortunately, you hit a mine!', false);
+                    }
+                },
+
+                showResult(message, isWin) {
+                    const resultElement = document.getElementById('mineResult');
+                    const resultText = document.getElementById('mineResultText');
+                    
+                    resultText.textContent = message;
+                    resultText.className = isWin ? 'result-text win' : 'result-text lose';
+                    resultElement.style.display = 'block';
+                },
+
+                resetGame() {
+                    document.getElementById('mineResult').style.display = 'none';
+                    document.getElementById('mineGameBoard').style.display = 'none';
+                    document.getElementById('currentWin').textContent = formatCurrency(0);
+                    document.getElementById('openedCells').textContent = '0/25';
+                },
+
+                saveUserBalance() {
+                    if (currentUser) {
+                        currentUser.balance = userBalance;
+                        localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+                        
+                        // Update in users list
+                        const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+                        if (users[currentUser.email]) {
+                            users[currentUser.email].balance = userBalance;
+                            localStorage.setItem('chashkz_users', JSON.stringify(users));
+                        }
+                    }
+                }
+            };
+            
+            mineGame.init();
+            
+            // Add event listeners for action buttons
+            document.getElementById('collectBtn').addEventListener('click', () => mineGame.collectWin());
+            document.getElementById('continueBtn').addEventListener('click', () => mineGame.continueGame());
+            document.getElementById('newMineGame').addEventListener('click', () => mineGame.resetGame());
+        }
+
+        // Roulette Game Logic
+        function initRouletteGame() {
+            const rouletteGame = {
+                betAmount: 100,
+                selectedBet: null,
+                isSpinning: false,
+                
+                init() {
+                    document.getElementById('spinRoulette').addEventListener('click', () => this.spin());
+                    
+                    // Bet buttons
+                    document.querySelectorAll('.bet-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            this.selectedBet = btn.dataset.bet;
+                        });
+                    });
+                },
+                
+                spin() {
+                    if (!this.selectedBet) {
+                        alert(currentLanguage === 'ru' ? 'Выберите ставку!' : 'Choose a bet!');
+                        return;
+                    }
+                    
+                    if (this.isSpinning) return;
+                    
+                    this.betAmount = parseInt(document.getElementById('rouletteBet').value);
+                    
+                    if (this.betAmount < 10 || this.betAmount > 10000) {
+                        alert(currentLanguage === 'ru' ? 'Сумма ставки должна быть от 10 до 10 000 ₽' : 'Bet amount must be from 10 to 10,000 ₽');
+                        return;
+                    }
+                    
+                    // Convert bet amount to rubles for comparison
+                    const betAmountInRub = this.betAmount / exchangeRates[currentCurrency];
+                    if (betAmountInRub > userBalance) {
+                        alert(currentLanguage === 'ru' ? 'Недостаточно средств на балансе' : 'Insufficient funds');
+                        return;
+                    }
+                    
+                    // Deduct bet amount
+                    userBalance -= betAmountInRub;
+                    updateUI();
+                    this.saveUserBalance();
+                    
+                    this.isSpinning = true;
+                    document.getElementById('spinRoulette').disabled = true;
+                    
+                    // Simulate roulette spin
+                    const random = Math.random();
+                    let result;
+                    
+                    if (random < 0.02) { // 2% chance for green
+                        result = 'green';
+                    } else if (random < 0.51) { // 49% chance for red
+                        result = 'red';
+                    } else { // 49% chance for black
+                        result = 'black';
+                    }
+                    
+                    // Calculate win
+                    let winAmount = 0;
+                    if (this.selectedBet === result) {
+                        if (result === 'green') {
+                            winAmount = this.betAmount * 14;
+                        } else {
+                            winAmount = this.betAmount * 2;
+                        }
+                        
+                        // Convert win amount to rubles for storage
+                        const winAmountInRub = winAmount / exchangeRates[currentCurrency];
+                        userBalance += winAmountInRub;
+                    }
+                    
+                    // Animate wheel
+                    const wheel = document.getElementById('wheel');
+                    const spins = 3 + Math.floor(Math.random() * 2); // 3 or 4 spins
+                    let degrees;
+                    
+                    if (result === 'red') {
+                        degrees = 360 * spins + Math.random() * 180; // red zone (0-180 degrees)
+                    } else if (result === 'black') {
+                        degrees = 360 * spins + 180 + Math.random() * 180; // black zone (180-360 degrees)
+                    } else {
+                        degrees = 360 * spins; // green (0 degrees)
+                    }
+                    
+                    wheel.style.transform = `rotate(${degrees}deg)`;
+                    
+                    // Show result after animation
+                    setTimeout(() => {
+                        this.isSpinning = false;
+                        document.getElementById('spinRoulette').disabled = false;
+                        
+                        // Update UI
+                        const resultText = result === 'red' ? 
+                            (currentLanguage === 'ru' ? 'Красное' : 'Red') : 
+                            result === 'black' ? 
+                            (currentLanguage === 'ru' ? 'Чёрное' : 'Black') : 
+                            (currentLanguage === 'ru' ? 'Зелёное' : 'Green');
+                        document.getElementById('rouletteResultText').textContent = resultText;
+                        document.getElementById('rouletteWin').textContent = formatCurrency(winAmount);
+                        document.getElementById('rouletteResult').style.display = 'block';
+                        
+                        this.saveUserBalance();
+                        updateUI();
+                        
+                        // Show result message
+                        if (winAmount > 0) {
+                            alert((currentLanguage === 'ru' ? 'Поздравляем! Вы выиграли ' : 'Congratulations! You won ') + formatCurrency(winAmount));
+                        } else {
+                            alert(currentLanguage === 'ru' ? 'К сожалению, вы проиграли' : 'Unfortunately, you lost');
+                        }
+                    }, 4000);
+                },
+
+                saveUserBalance() {
+                    if (currentUser) {
+                        currentUser.balance = userBalance;
+                        localStorage.setItem('chashkz_currentUser', JSON.stringify(currentUser));
+                        
+                        // Update in users list
+                        const users = JSON.parse(localStorage.getItem('chashkz_users') || '{}');
+                        if (users[currentUser.email]) {
+                            users[currentUser.email].balance = userBalance;
+                            localStorage.setItem('chashkz_users', JSON.stringify(users));
+                        }
+                    }
+                }
+            };
+            
+            rouletteGame.init();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved settings
+            const savedSettings = localStorage.getItem('chashkz_settings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                currentCurrency = settings.currency || 'RUB';
+                currentLanguage = settings.language || 'ru';
+                
+                // Set values in selects
+                document.getElementById('currencySelect').value = currentCurrency;
+                document.getElementById('languageSelect').value = currentLanguage;
+            }
+            
+            // Apply translation
+            applyTranslation(currentLanguage);
+            
+            updateUI();
+            updateCurrencyDisplay();
+            
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('chashkz_currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                userBalance = currentUser.balance;
+                userId = currentUser.id;
+                updateUI();
+                updateCurrencyDisplay();
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const modals = [
+                authModal, profileModal, depositModal, withdrawModal,
+                affiliateModal, gameHelpModal, paymentSuccessModal
+            ];
+            
+            modals.forEach(modal => {
+                if (modal && e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
